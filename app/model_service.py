@@ -6,7 +6,7 @@ from app.models import Alert, Zone, AlertStatus, ZoneStatus, User, Ticker
 class AlertManager:
     @staticmethod
     def create_alert(user: User, ticker: Ticker,
-                     alert_type: str, price: float) -> Alert:
+                     alert_type: str, price: float, notes: Optional[str] = None) -> Alert:
         """Create a new alert"""
         alert = Alert(
             user_id=user.id,
@@ -14,6 +14,7 @@ class AlertManager:
             symbol=ticker.symbol,
             type=alert_type,
             price=price,
+            notes=notes,
             status=AlertStatus.ACTIVE
         )
         db.session.add(alert)
@@ -22,7 +23,7 @@ class AlertManager:
 
     @staticmethod
     def update_alert(alert_id: int, alert_type: Optional[str] = None,
-                     price: Optional[float] = None) -> Optional[Alert]:
+                     price: Optional[float] = None, notes: Optional[str] = None) -> Optional[Alert]:
         """Update an existing alert"""
         alert = db.session.get(Alert, alert_id)
         if alert:
@@ -30,6 +31,8 @@ class AlertManager:
                 alert.type = alert_type
             if price is not None:
                 alert.price = price
+            if notes is not None:
+                alert.notes = notes
             db.session.commit()
         return alert
 
@@ -56,7 +59,7 @@ class ZoneManager:
     @staticmethod
     def create_zone(user: User, ticker: Ticker,
                     zone_type: str, entry: float, stoploss: float,
-                    target: float) -> Zone:
+                    target: float, notes: Optional[str] = None) -> Zone:
         """Create a new trading zone"""
         zone = Zone(
             user_id=user.id,
@@ -66,6 +69,7 @@ class ZoneManager:
             entry=entry,
             stoploss=stoploss,
             target=target,
+            notes=notes,
             status=ZoneStatus.ACTIVE
         )
         db.session.add(zone)
@@ -75,7 +79,7 @@ class ZoneManager:
     @staticmethod
     def update_zone(zone_id: int, entry: Optional[float] = None,
                     stoploss: Optional[float] = None,
-                    target: Optional[float] = None) -> Optional[Zone]:
+                    target: Optional[float] = None, notes: Optional[str] = None) -> Optional[Zone]:
         """Update an existing zone"""
         zone = db.session.get(Zone, zone_id)
         if zone:
@@ -85,6 +89,8 @@ class ZoneManager:
                 zone.stoploss = stoploss
             if target is not None:
                 zone.target = target
+            if notes is not None:
+                zone.notes = notes
             db.session.commit()
         return zone
 

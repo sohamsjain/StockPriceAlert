@@ -139,6 +139,7 @@ class Alert(db.Model):
     type: so.Mapped[str] = so.mapped_column(sa.String(20), nullable=False)
     price: so.Mapped[float] = so.mapped_column(sa.Float, nullable=False)
     status: so.Mapped[str] = so.mapped_column(sa.String(20), default=AlertStatus.ACTIVE)
+    notes: so.Mapped[Optional[str]] = so.mapped_column(sa.Text, nullable=True)  # NEW FIELD
     created_at: so.Mapped[datetime] = so.mapped_column(index=True,
                                                        default=lambda: datetime.now(IST))
     triggered_at: so.Mapped[Optional[datetime]] = so.mapped_column()
@@ -161,6 +162,7 @@ class Zone(db.Model):
     symbol: so.Mapped[str] = so.mapped_column(sa.String(20), nullable=False)
     type: so.Mapped[str] = so.mapped_column(sa.String(20), nullable=False)
     status: so.Mapped[str] = so.mapped_column(sa.String(20), default=ZoneStatus.ACTIVE)
+    notes: so.Mapped[Optional[str]] = so.mapped_column(sa.Text, nullable=True)  # NEW FIELD
 
     # Price levels
     entry: so.Mapped[float] = so.mapped_column(sa.Float, nullable=False)

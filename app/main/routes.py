@@ -48,6 +48,7 @@ def get_alerts():
             'type': alert.type,
             'price': alert.price,
             'status': alert.status,
+            'notes': alert.notes,  # Include notes in response
             'created_at': alert.created_at.isoformat(),
             'last_price': alert.ticker.last_price if alert.ticker else None
         } for alert in alerts]
@@ -69,7 +70,8 @@ def create_alert():
             user=current_user,
             ticker=ticker,
             alert_type=data['type'],
-            price=data['price']
+            price=data['price'],
+            notes=data.get('notes')  # Get notes from request
         )
 
         return jsonify({
@@ -80,6 +82,7 @@ def create_alert():
                 'type': alert.type,
                 'price': alert.price,
                 'status': alert.status,
+                'notes': alert.notes,
                 'created_at': alert.created_at.isoformat(),
                 'last_price': alert.ticker.last_price if alert.ticker else None
             }
@@ -123,7 +126,8 @@ def update_alert(alert_id):
         updated_alert = AlertManager.update_alert(
             alert_id=alert_id,
             alert_type=data.get('type'),
-            price=data.get('price')
+            price=data.get('price'),
+            notes=data.get('notes')  # Handle notes update
         )
 
         if updated_alert:
@@ -135,6 +139,7 @@ def update_alert(alert_id):
                     'type': updated_alert.type,
                     'price': updated_alert.price,
                     'status': updated_alert.status,
+                    'notes': updated_alert.notes,
                     'created_at': updated_alert.created_at.isoformat(),
                     'last_price': updated_alert.ticker.last_price if updated_alert.ticker else None
                 }
@@ -166,6 +171,7 @@ def get_zones():
             'stoploss': zone.stoploss,
             'target': zone.target,
             'status': zone.status,
+            'notes': zone.notes,  # Include notes in response
             'created_at': zone.created_at.isoformat(),
             'entry_at': zone.entry_at.isoformat() if zone.entry_at else None,
             'target_at': zone.target_at.isoformat() if zone.target_at else None,
@@ -193,7 +199,8 @@ def create_zone():
             zone_type=data['type'],
             entry=data['entry'],
             stoploss=data['stoploss'],
-            target=data['target']
+            target=data['target'],
+            notes=data.get('notes')  # Get notes from request
         )
 
         return jsonify({
@@ -206,6 +213,7 @@ def create_zone():
                 'stoploss': zone.stoploss,
                 'target': zone.target,
                 'status': zone.status,
+                'notes': zone.notes,
                 'created_at': zone.created_at.isoformat(),
                 'last_price': zone.ticker.last_price if zone.ticker else None
             }
@@ -250,7 +258,8 @@ def update_zone(zone_id):
             zone_id=zone_id,
             entry=data.get('entry'),
             stoploss=data.get('stoploss'),
-            target=data.get('target')
+            target=data.get('target'),
+            notes=data.get('notes')  # Handle notes update
         )
 
         if updated_zone:
@@ -264,6 +273,7 @@ def update_zone(zone_id):
                     'stoploss': updated_zone.stoploss,
                     'target': updated_zone.target,
                     'status': updated_zone.status,
+                    'notes': updated_zone.notes,
                     'created_at': updated_zone.created_at.isoformat(),
                     'last_price': updated_zone.ticker.last_price if updated_zone.ticker else None
                 }

@@ -1,0 +1,17 @@
+/* Sorting functionality styles */
+.sortable {
+    cursor: pointer;
+    user-select: none;
+}
+.sortable:hover {
+    background-color: rgba(55, 65, 81, 0.5);
+}
+.sort-icon {
+    transition: transform 0.2s ease;
+}
+.sort-asc .sort-icon {
+    transform: rotate(180deg);
+}
+.sort-desc .sort-icon {
+    transform: rotate(0deg);
+}

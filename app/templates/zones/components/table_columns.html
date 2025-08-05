@@ -1,0 +1,95 @@
+<thead class="font-medium text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 sticky-header">
+<tr>
+    <th scope="col" class="px-4 resizable-th" style="width: 60px;">
+        <div class="flex items-center">
+            <input id="checkbox-all" type="checkbox"
+                   class="w-6 h-6 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+            <label for="checkbox-all" class="sr-only">checkbox</label>
+        </div>
+        <div class="resize-handle"></div>
+    </th>
+    <th scope="col" class="pl-10 pr-4 py-3 sortable resizable-th" data-column="symbol"
+        data-type="text" style="width: 180px;">
+        <div class="flex items-center justify-start">
+            <span>Symbol</span>
+            <svg class="w-4 h-4 sort-icon" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/>
+            </svg>
+        </div>
+        <div class="resize-handle"></div>
+    </th>
+    <th scope="col" class="px-4 py-3 text-right sortable resizable-th" data-column="last"
+        data-type="number" style="width: 120px;">
+        <div class="flex items-center justify-end">
+            <span>Last</span>
+            <svg class="w-4 h-4 sort-icon ml-1" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/>
+            </svg>
+        </div>
+        <div class="resize-handle"></div>
+    </th>
+    <th scope="col" class="px-4 py-3 text-right sortable resizable-th" data-column="entry"
+        data-type="number" style="width: 120px;">
+        <div class="flex items-center justify-end">
+            <span>Entry</span>
+            <svg class="w-4 h-4 sort-icon ml-1" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/>
+            </svg>
+        </div>
+        <div class="resize-handle"></div>
+    </th>
+    <th scope="col" class="px-4 py-3 text-right sortable resizable-th" data-column="stoploss"
+        data-type="number" style="width: 120px;">
+        <div class="flex items-center justify-end">
+            <span>Stoploss</span>
+            <svg class="w-4 h-4 sort-icon ml-1" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/>
+            </svg>
+        </div>
+        <div class="resize-handle"></div>
+    </th>
+    <th scope="col" class="px-4 py-3 text-right sortable resizable-th" data-column="target"
+        data-type="number" style="width: 120px;">
+        <div class="flex items-center justify-end">
+            <span>Target</span>
+            <svg class="w-4 h-4 sort-icon ml-1" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/>
+            </svg>
+        </div>
+        <div class="resize-handle"></div>
+    </th>
+    <th scope="col" class="px-4 py-3 text-right sortable resizable-th" data-column="status"
+        data-type="text" style="width: 140px;">
+        <div class="flex items-center justify-end">
+            <span>Status</span>
+            <svg class="w-4 h-4 sort-icon ml-1" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/>
+            </svg>
+        </div>
+        <div class="resize-handle"></div>
+    </th>
+    <th scope="col" class="px-4 py-3 text-right sortable resizable-th" data-column="created"
+        data-type="date" style="width: 180px;">
+        <div class="flex items-center justify-end">
+            <span>Created</span>
+            <svg class="w-4 h-4 sort-icon ml-1" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/>
+            </svg>
+        </div>
+        <div class="resize-handle"></div>
+    </th>
+    <th scope="col" class="px-4 py-3 text-right sortable resizable-th" data-column="updated"
+        data-type="date" style="width: 180px;">
+        <div class="flex items-center justify-end">
+            <span>Updated</span>
+            <svg class="w-4 h-4 sort-icon ml-1" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/>
+            </svg>
+        </div>
+        <div class="resize-handle"></div>
+    </th>
+    <th scope="col" class="px-4 py-3 text-right resizable-th" style="width: 120px;">View
+        <div class="resize-handle"></div>
+    </th>
+</tr>
+</thead>

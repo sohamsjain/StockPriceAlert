@@ -10,7 +10,7 @@ from app import db
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('main.alerts'))
+        return redirect(url_for('main.zones'))
 
     form = LoginForm()
     if form.validate_on_submit():
@@ -22,7 +22,7 @@ def login():
         login_user(user, remember=form.remember.data)
         next_page = request.args.get('next')
         if not next_page or urlsplit(next_page).netloc != '':
-            next_page = url_for('main.alerts')
+            next_page = url_for('main.zones')
         return redirect(next_page)
     return render_template('auth/login.html', title='Sign In', form=form)
 
@@ -30,7 +30,7 @@ def login():
 @bp.route('/signup', methods=['GET', 'POST'])
 def signup():
     if current_user.is_authenticated:
-        return redirect(url_for('main.alerts'))
+        return redirect(url_for('main.zones'))
 
     form = SignUpForm()
     if form.validate_on_submit():

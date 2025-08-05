@@ -1,0 +1,133 @@
+/* Full height container styles */
+.full-height-container {
+    height: calc(100vh - 90px); /* Account for header height */
+    display: flex;
+    flex-direction: column;
+}
+
+.table-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0; /* Important for flexbox child to shrink */
+}
+
+.table-header {
+    flex-shrink: 0;
+}
+
+.table-content {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Scrollable table styles */
+.scrollable-table-wrapper {
+    flex: 1;
+    overflow: auto;
+}
+.dark .scrollable-table-wrapper {
+    border-color: #4b5563;
+}
+
+/* Custom Scrollbar Styles */
+.scrollable-table-wrapper::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.scrollable-table-wrapper::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+}
+
+.scrollable-table-wrapper::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.scrollable-table-wrapper::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+.scrollable-table-wrapper::-webkit-scrollbar-corner {
+    background: #f1f5f9;
+}
+
+/* Dark mode scrollbar */
+.dark .scrollable-table-wrapper::-webkit-scrollbar-track {
+    background: #1f2937;
+}
+
+.dark .scrollable-table-wrapper::-webkit-scrollbar-thumb {
+    background: #4b5563;
+}
+
+.dark .scrollable-table-wrapper::-webkit-scrollbar-thumb:hover {
+    background: #6b7280;
+}
+
+.dark .scrollable-table-wrapper::-webkit-scrollbar-corner {
+    background: #1f2937;
+}
+
+/* Firefox scrollbar styling */
+.scrollable-table-wrapper {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 #f1f5f9;
+}
+
+.dark .scrollable-table-wrapper {
+    scrollbar-color: #4b5563 #1f2937;
+}
+
+/* Resizable columns styles */
+.resizable-table {
+    table-layout: fixed;
+    width: 100%;
+    min-width: 1200px; /* Minimum width to prevent column squashing */
+}
+.resizable-th {
+    position: relative;
+    min-width: 80px;
+}
+
+/* Sticky header */
+.sticky-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: #f9fafb;
+}
+.dark .sticky-header {
+    background: #374151;
+}
+
+/* Footer styles */
+.table-footer {
+    flex-shrink: 0;
+    background: white;
+}
+.dark .table-footer {
+    background: #1f2937;
+}
+
+/* Checkbox styles */
+.checkbox-indeterminate {
+    opacity: 0.6;
+}
+
+/* Symbol cell styles */
+.symbol-cell:hover .chart-icon {
+    opacity: 1;
+}
+.chart-icon {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+.chart-icon:hover {
+    opacity: 0.7;
+}

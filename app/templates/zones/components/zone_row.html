@@ -1,0 +1,111 @@
+<tr class="border-b dark:border-gray-600 {% if zone.type == 'Long Zone' %}hover:bg-green-100 dark:hover:bg-[#022107]{% else %}hover:bg-red-100 dark:hover:bg-[#210202]{% endif %}">
+    <td class="w-4 px-4 py-2">
+        <div class="flex items-center">
+            <input id="checkbox-{{ loop_index }}" type="checkbox" value="{{ zone.id }}"
+                   onclick="event.stopPropagation()"
+                   class="row-checkbox w-6 h-6 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+            <label for="checkbox-{{ loop_index }}" class="sr-only">checkbox</label>
+        </div>
+    </td>
+    <td class="px-4 py-2 font-medium text-gray-900 dark:text-gray-400 dark:hover:text-white whitespace-nowrap symbol-cell cursor-pointer"
+        data-sort="symbol" data-symbol="{{ zone.symbol }}" onclick="openChart('{{ zone.symbol }}')">
+        <div class="flex items-center">
+            <div class="inline-block w-4 h-4 mr-2 {% if zone.type == 'Long Zone' %}bg-green-700{% else %}bg-red-700{% endif %} rounded-full"></div>
+            <span class="symbol-text">{{ zone.symbol }}</span>
+            <svg class="w-[24px] h-[24px] text-gray-800 dark:text-white chart-icon ml-2"
+                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                 fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M4 4v15a1 1 0 0 0 1 1h15M8 16l2.5-5.5 3 3L17.273 7 20 9.667"/>
+            </svg>
+        </div>
+    </td>
+    <td class="px-4 py-2 font-medium text-right dark:text-gray-400 dark:hover:text-white"
+        data-sort="last">
+        {% if zone.ticker.last_price %}
+        ₹ {{ "%.2f"|format(zone.ticker.last_price) }}
+        {% else %}
+        ₹ -
+        {% endif %}
+    </td>
+    <td class="px-4 py-2 font-medium text-right {% if zone.status == 'Entry Hit' %}bg-green-50 dark:bg-[#022107]{% endif %} dark:text-gray-400 dark:hover:text-white editable-cell"
+        data-sort="entry" data-zone-id="{{ zone.id }}" data-field="entry" onclick="startEdit(this)">
+        <svg class="edit-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+        </svg>
+        <span class="cell-value">₹ {{ "%.2f"|format(zone.entry) }}</span>
+    </td>
+    <td class="px-4 py-2 font-medium text-right {% if zone.status == 'Stoploss Hit' %}bg-red-50 dark:bg-[#210202]{% elif zone.status == 'Failed' %}bg-gray-50 dark:bg-gray-700{% endif %} dark:text-gray-400 dark:hover:text-white editable-cell"
+        data-sort="stoploss" data-zone-id="{{ zone.id }}" data-field="stoploss"
+        onclick="startEdit(this)">
+        <svg class="edit-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+        </svg>
+        <span class="cell-value">₹ {{ "%.2f"|format(zone.stoploss) }}</span>
+    </td>
+    <td class="px-4 py-2 font-medium text-right {% if zone.status == 'Target Hit' %}bg-purple-50 dark:bg-[#311f37]{% endif %} dark:text-gray-400 dark:hover:text-white editable-cell"
+        data-sort="target" data-zone-id="{{ zone.id }}" data-field="target"
+        onclick="startEdit(this)">
+        <svg class="edit-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+        </svg>
+        <span class="cell-value">₹ {{ "%.2f"|format(zone.target) }}</span>
+    </td>
+    <td class="px-4 py-2 font-medium text-right whitespace-nowrap" data-sort="status">
+        <span class="px-2 py-1 text-xs font-medium
+            {% if zone.status == 'Active' %}text-blue-300 bg-blue-900
+            {% elif zone.status == 'Entry Hit' %}text-green-300 bg-green-900
+            {% elif zone.status == 'Target Hit' %}text-purple-300 bg-purple-900
+            {% elif zone.status == 'Stoploss Hit' %}text-red-300 bg-red-900
+            {% else %}text-gray-300 bg-gray-900{% endif %} rounded">
+            {{ zone.status }}
+        </span>
+    </td>
+    <td class="px-4 py-2 text-right dark:text-gray-400 dark:hover:text-white"
+        data-sort="created"
+        data-sort-value="{{ zone.created_at.isoformat() }}">
+        <svg class="w-[18px] h-[18px] inline-block text-green-800 dark:text-green-500"
+             aria-hidden="true"
+             xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+             viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="1.2"
+                  d="M4 10h16m-8-3V4M7 7V4m10 3V4M5 20h14a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1Zm3-7h.01v.01H8V13Zm4 0h.01v.01H12V13Zm4 0h.01v.01H16V13Zm-8 4h.01v.01H8V17Zm4 0h.01v.01H12V17Zm4 0h.01v.01H16V17Z"/>
+        </svg>
+        {{ zone.created_at.strftime('%a %b %d • %H:%M') }}
+    </td>
+    <td class="px-4 py-2 text-right dark:text-gray-400 dark:hover:text-white"
+        data-sort="updated"
+        data-sort-value="{{ zone.updated_at.isoformat() }}">
+        <svg class="w-[18px] h-[18px] inline-block text-yellow-800 dark:text-yellow-500"
+             aria-hidden="true"
+             xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+             viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="1.2"
+                  d="M12 8v4l3 3M3.22302 14C4.13247 18.008 7.71683 21 12 21c4.9706 0 9-4.0294 9-9 0-4.97056-4.0294-9-9-9-3.72916 0-6.92858 2.26806-8.29409 5.5M7 9H3V5"/>
+        </svg>
+        {{ zone.updated_at.strftime('%a %b %d • %H:%M') }}
+    </td>
+    <td class="px-4 py-2 text-right dark:text-gray-400 dark:hover:text-white">
+        <svg class="w-[24px] h-[24px] inline-block" aria-hidden="true"
+             xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+             viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                  stroke-width="1.2"
+                  d="M7 9h5m3 0h2M7 12h2m3 0h5M5 5h14a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-6.616a1 1 0 0 0-.67.257l-2.88 2.592A.5.5 0 0 1 8 18.477V17a1 1 0 0 0-1-1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z"/>
+        </svg>
+        <svg class="w-6 h-6 ml-auto inline-block" aria-hidden="true"
+             xmlns="http://www.w3.org/2000/svg"
+             width="24"
+             height="24" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-width="1"
+                  d="M21 12c0 1.2-4.03 6-9 6s-9-4.8-9-6c0-1.2 4.03-6 9-6s9 4.8 9 6Z"/>
+            <path stroke="currentColor" stroke-width="1" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
+        </svg>
+    </td>
+</tr>

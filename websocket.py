@@ -7,7 +7,7 @@ from sqlalchemy import select
 from app import db, create_app
 from app.models import Ticker, User
 from kite import Kite
-from app.model_service import AlertManager, ZoneManager
+from app.model_service import ZoneManager
 from notification_service import NotificationManager
 import threading
 import pytz
@@ -55,7 +55,6 @@ class TickerManager:
     def __init__(self):
         self.kws = None
         self.tickers = {}  # Map instrument_token to Ticker object
-        self.alert_manager = AlertManager()
         self.zone_manager = ZoneManager()
         self.app = create_app()
         self.k = None
@@ -204,8 +203,8 @@ class TickerManager:
                 # Update ticker price in database
                 self.update_ticker_price(ticker, candle.close, current_time)
 
-                # Check alerts and zones using candle close price
-                self.check_alerts_and_zones(ticker.id, candle.close, candle)
+                # Check zones using candle close price
+                self.check_zones(ticker.id, candle.close, candle)
 
                 # Move completed candle to history
                 with self.data_lock:
@@ -232,17 +231,10 @@ class TickerManager:
             with self.app.app_context():
                 db.session.rollback()
 
-    def check_alerts_and_zones(self, ticker_id: int, current_price: float, candle: CandleData):
+    def check_zones(self, ticker_id: int, current_price: float, candle: CandleData):
         """Check alerts and zones for a specific ticker using candle data"""
         try:
             with self.app.app_context():
-                # Check alerts using candle data for more accurate triggering
-                active_alerts = self.alert_manager.get_active_alerts_for_ticker(ticker_id)
-                for alert in active_alerts:
-                    alert_triggered = self.check_alert_with_candle(alert, candle)
-                    if alert_triggered:
-                        logger.info(f"Alert triggered: {alert} at price {current_price} (Candle: {candle})")
-                        NotificationManager.send_alert_notification(alert.user, alert, current_price)
 
                 # Check zones using candle data (we can use high/low for more accurate zone checking)
                 active_zones = self.zone_manager.get_active_zones_for_ticker(ticker_id)
@@ -256,29 +248,6 @@ class TickerManager:
         except Exception as e:
             logger.error(f"Error checking alerts/zones for ticker {ticker_id}: {e}")
 
-    def check_alert_with_candle(self, alert, candle: CandleData) -> bool:
-        """Simple alert checking using candle high/low data"""
-        from app.models import AlertType, AlertStatus
-
-        if alert.status != AlertStatus.ACTIVE:
-            return False
-
-        triggered = False
-
-        if alert.type == AlertType.CROSS_OVER:
-            # Cross Over: Check if candle high reached or exceeded alert price
-            triggered = candle.high >= alert.price
-
-        elif alert.type == AlertType.CROSS_UNDER:
-            # Cross Under: Check if candle low reached or went below alert price
-            triggered = candle.low <= alert.price
-
-        if triggered:
-            alert.status = AlertStatus.TRIGGERED
-            alert.triggered_at = datetime.now(IST)
-            db.session.commit()
-
-        return triggered
 
     def check_zone_with_candle(self, zone, candle: CandleData) -> bool:
         """Enhanced zone checking using candle high/low data"""

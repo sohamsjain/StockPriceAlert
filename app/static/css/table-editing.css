@@ -1,0 +1,109 @@
+/* Inline editing styles */
+.editable-cell {
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.editable-cell:hover {
+    background-color: rgba(59, 130, 246, 0.1);
+}
+
+.edit-icon {
+    position: absolute;
+    left: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    width: 14px;
+    height: 14px;
+    color: #6b7280;
+    pointer-events: none;
+}
+
+.editable-cell:hover .edit-icon {
+    opacity: 1;
+}
+
+.editable-cell:hover .cell-value {
+    padding-left: 24px;
+}
+
+.cell-value {
+    transition: padding-left 0.2s ease;
+    display: block;
+    width: 100%;
+    min-height: 20px;
+}
+
+.edit-input {
+    width: 100%;
+    padding: 4px 8px;
+    border: 2px solid #3b82f6;
+    border-radius: 4px;
+    background: white;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: right;
+    outline: none;
+    box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.2);
+}
+
+.dark .edit-input {
+    background: #1f2937;
+    color: white;
+    border-color: #60a5fa;
+}
+
+.editing {
+    background-color: rgba(59, 130, 246, 0.1) !important;
+}
+
+.editing .edit-icon {
+    opacity: 0 !important;
+}
+
+/* Loading state for cells */
+.cell-updating {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* Numeric input spinner styling */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+    background: none;
+    color: white;
+}
+
+/* Firefox spinner styling */
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+/* Custom spinner for webkit browsers */
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: inner-spin-button;
+    background: transparent;
+    opacity: 1;
+    color: white;
+    cursor: pointer;
+}
+
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: inner-spin-button;
+    background: transparent;
+    opacity: 1;
+    color: white;
+    cursor: pointer;
+}
+
+/* Ensure arrows are visible on hover */
+input[type="number"]:hover::-webkit-inner-spin-button,
+input[type="number"]:hover::-webkit-outer-spin-button {
+    opacity: 1;
+    background: transparent;
+}

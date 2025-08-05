@@ -38,20 +38,6 @@ class WhatsAppProvider:
 class NotificationManager:
 
     @classmethod
-    def send_alert_notification(cls, user: User, alert: Alert, current_price: float) -> None:
-        """Send notification for triggered alert"""
-
-        destination = user.phone_number
-        params = [alert.symbol, str(alert.price), str(current_price)]
-
-        if alert.type == AlertType.CROSS_OVER:
-            campaign_name = "alertcrossover"
-        else:
-            campaign_name = "alertcrossunder"
-
-        WhatsAppProvider.send(destination, campaign_name, params)
-
-    @classmethod
     def send_zone_notification(cls, user: User, zone: Zone) -> None:
         """Send notification for zone events"""
 

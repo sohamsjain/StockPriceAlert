@@ -1,0 +1,17 @@
+<nav class="flex flex-col items-center justify-between p-4 space-y-3 md:flex-row md:items-center md:space-y-0 table-footer"
+     aria-label="Table navigation">
+    <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
+        <span id="showing-info">
+            Showing
+            <span class="font-semibold text-gray-900 dark:text-white">{{ zones|length }}</span>
+            zones
+        </span>
+        <span id="selected-info" class="hidden">
+            Selected
+            <span id="selected-count" class="font-semibold text-gray-900 dark:text-white">0</span>
+            of
+            <span id="total-zones"
+                  class="font-semibold text-gray-900 dark:text-white">{{ zones|length }}</span>
+        </span>
+    </span>
+</nav>

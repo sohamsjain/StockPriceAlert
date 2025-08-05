@@ -1,0 +1,43 @@
+/* Column resize functionality */
+.resize-handle {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 5px;
+    cursor: col-resize;
+    user-select: none;
+    background: transparent;
+    border-right: 2px solid transparent;
+    z-index: 1;
+}
+.resize-handle:hover {
+    background: white;
+    width: 4px;
+}
+.resize-handle.resizing {
+    background: white;
+    width: 2px;
+}
+.resizing {
+    user-select: none;
+}
+
+/* Visual feedback for keyboard shortcuts */
+.keyboard-hint {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    z-index: 1000;
+    animation: fadeInOut 2s ease-in-out;
+}
+
+@keyframes fadeInOut {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 1; }
+}

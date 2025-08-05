@@ -1,0 +1,133 @@
+/* Delete button styles */
+.delete-button {
+    background-color: #dc2626;
+    border-color: #dc2626;
+}
+.delete-button:hover {
+    background-color: #b91c1c;
+    border-color: #b91c1c;
+}
+
+/* New zone form styles */
+.new-zone-row {
+    background-color: #f3f4f6;
+}
+.dark .new-zone-row {
+    background-color: #192439;
+}
+
+.form-input {
+    padding: 4px 8px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    font-size: 12px;
+    width: 100%;
+    background: white;
+}
+.dark .form-input {
+    background: #1f2937;
+    border-color: #4b5563;
+    color: white;
+}
+
+.symbol-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    max-height: 150px;
+    overflow-y: auto;
+    z-index: 50;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+.dark .symbol-dropdown {
+    background: #1f2937;
+    border-color: #4b5563;
+}
+
+.symbol-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-bottom: 1px solid #e5e7eb;
+}
+.symbol-option:hover {
+    background: #f3f4f6;
+}
+.dark .symbol-option {
+    border-color: #4b5563;
+}
+.dark .symbol-option:hover {
+    background: #374151;
+}
+
+/* Keyboard navigation enhancements */
+.symbol-option.keyboard-selected {
+    background-color: #374151 !important;
+}
+
+.form-input:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+#new-zone-row input:disabled,
+#new-zone-row button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Style for all form inputs */
+.form-input::-webkit-outer-spin-button,
+.form-input::-webkit-inner-spin-button {
+    background: transparent;
+    color: white;
+    opacity: 1;
+}
+
+.edit-input::-webkit-outer-spin-button,
+.edit-input::-webkit-inner-spin-button {
+    background: transparent;
+    color: white;
+    opacity: 1;
+}
+
+/* Empty state styles */
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #6b7280;
+}
+.dark .empty-state {
+    color: #9ca3af;
+}
+
+.empty-state-icon {
+    width: 4rem;
+    height: 4rem;
+    margin: 0 auto 1rem;
+    opacity: 0.5;
+}
+
+.create-zone-button {
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.create-zone-button:hover {
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 8px -1px rgba(0, 0, 0, 0.15);
+}

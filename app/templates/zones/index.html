@@ -1,0 +1,50 @@
+{% extends "shell.html" %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/table-base.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/table-sorting.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/table-editing.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/table-forms.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/table-resize.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/table-filters.css') }}">
+{% endblock %}
+
+{% block page %}
+<section class="bg-gray-50 dark:bg-gray-900 full-height-container">
+    <div class="px-4 mx-auto max-w-screen table-container">
+        <div class="relative bg-white shadow-md dark:bg-gray-800 sm:rounded-lg table-content">
+
+            {% include 'zones/components/table_header.html' %}
+
+            <div class="scrollable-table-wrapper">
+                <table id="sortableTable" class="w-full text-sm text-left text-gray-500 dark:text-gray-400 resizable-table">
+
+                    {% include 'zones/components/table_columns.html' %}
+
+                    <tbody id="tableBody">
+                        {% if zones and zones|length > 0 %}
+                            {% for zone in zones %}
+                                {% with loop_index = loop.index %}
+                                    {% include 'zones/components/zone_row.html' %}
+                                {% endwith %}
+                            {% endfor %}
+                        {% else %}
+                            {% include 'zones/components/empty_state.html' %}
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+
+            {% include 'zones/components/table_footer.html' %}
+        </div>
+    </div>
+</section>
+
+<script src="{{ url_for('static', filename='js/table-core.js') }}"></script>
+<script src="{{ url_for('static', filename='js/table-selection.js') }}"></script>
+<script src="{{ url_for('static', filename='js/table-sorting.js') }}"></script>
+<script src="{{ url_for('static', filename='js/table-editing.js') }}"></script>
+<script src="{{ url_for('static', filename='js/table-forms.js') }}"></script>
+<script src="{{ url_for('static', filename='js/table-resize.js') }}"></script>
+<script src="{{ url_for('static', filename='js/table-filters.js') }}"></script>
+{% endblock %}

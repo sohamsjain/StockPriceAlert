@@ -62,16 +62,6 @@ db.event.listen(db.session, 'before_commit', SearchableMixin.before_commit)
 db.event.listen(db.session, 'after_commit', SearchableMixin.after_commit)
 
 
-class AlertType:
-    CROSS_OVER = "Crossing Over"
-    CROSS_UNDER = "Crossing Under"
-
-
-class AlertStatus:
-    ACTIVE = "Active"
-    TRIGGERED = "Triggered"
-
-
 class ZoneType:
     LONG = "Long Zone"
     SHORT = "Short Zone"
@@ -102,7 +92,6 @@ class User(SearchableMixin, UserMixin, db.Model):
                                                        default=lambda: datetime.now(IST))
 
     # Relationships
-    alerts: so.Mapped[List[Alert]] = so.relationship(back_populates="user")
     zones: so.Mapped[List[Zone]] = so.relationship(back_populates="user")
 
     def __repr__(self):
@@ -126,35 +115,10 @@ class Ticker(SearchableMixin, db.Model):
     last_updated: so.Mapped[Optional[datetime]] = so.mapped_column()
 
     # Relationships
-    alerts: so.Mapped[List[Alert]] = so.relationship(back_populates="ticker")
     zones: so.Mapped[List[Zone]] = so.relationship(back_populates="ticker")
 
     def __repr__(self):
         return f'<Ticker {self.symbol}>'
-
-
-class Alert(db.Model):
-    id: so.Mapped[int] = so.mapped_column(primary_key=True)
-    symbol: so.Mapped[str] = so.mapped_column(sa.String(20), nullable=False)
-    type: so.Mapped[str] = so.mapped_column(sa.String(20), nullable=False)
-    price: so.Mapped[float] = so.mapped_column(sa.Float, nullable=False)
-    status: so.Mapped[str] = so.mapped_column(sa.String(20), default=AlertStatus.ACTIVE)
-    notes: so.Mapped[Optional[str]] = so.mapped_column(sa.Text, nullable=True)  # NEW FIELD
-    created_at: so.Mapped[datetime] = so.mapped_column(index=True,
-                                                       default=lambda: datetime.now(IST))
-    triggered_at: so.Mapped[Optional[datetime]] = so.mapped_column()
-    updated_at: so.Mapped[Optional[datetime]] = so.mapped_column(default=lambda: datetime.now(IST),
-                                                       onupdate=lambda: datetime.now(IST))
-    # Foreign Keys
-    user_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey('user.id'), index=True)
-    ticker_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey('ticker.id'), index=True)
-
-    # Relationships
-    user: so.Mapped[User] = so.relationship(back_populates="alerts")
-    ticker: so.Mapped[Ticker] = so.relationship(back_populates="alerts")
-
-    def __repr__(self):
-        return f'<Alert {self.ticker.symbol} {self.price}>'
 
 
 class Zone(db.Model):
@@ -194,7 +158,7 @@ class Zone(db.Model):
     def reward_to_risk_ratio(self) -> float:
         """Calculate reward to risk ratio: |target-entry|/|entry-stoploss|"""
         try:
-            return abs(self.target - self.entry) / abs(self.entry - self.stoploss)
+            return self.reward_per_unit / self.risk_per_unit
         except ZeroDivisionError:
             return 0.0
 
@@ -202,3 +166,8 @@ class Zone(db.Model):
     def risk_per_unit(self) -> float:
         """Calculate risk per unit: |entry-stoploss|"""
         return abs(self.entry - self.stoploss)
+
+    @property
+    def reward_per_unit(self) -> float:
+        """Calculate risk per unit: |entry-stoploss|"""
+        return abs(self.target - self.entry)

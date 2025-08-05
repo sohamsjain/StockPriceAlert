@@ -1,58 +1,6 @@
 from typing import Optional, List
 from app import db
-from app.models import Alert, Zone, AlertStatus, ZoneStatus, User, Ticker
-
-
-class AlertManager:
-    @staticmethod
-    def create_alert(user: User, ticker: Ticker,
-                     alert_type: str, price: float, notes: Optional[str] = None) -> Alert:
-        """Create a new alert"""
-        alert = Alert(
-            user_id=user.id,
-            ticker_id=ticker.id,
-            symbol=ticker.symbol,
-            type=alert_type,
-            price=price,
-            notes=notes,
-            status=AlertStatus.ACTIVE
-        )
-        db.session.add(alert)
-        db.session.commit()
-        return alert
-
-    @staticmethod
-    def update_alert(alert_id: int, alert_type: Optional[str] = None,
-                     price: Optional[float] = None, notes: Optional[str] = None) -> Optional[Alert]:
-        """Update an existing alert"""
-        alert = db.session.get(Alert, alert_id)
-        if alert:
-            if alert_type is not None:
-                alert.type = alert_type
-            if price is not None:
-                alert.price = price
-            if notes is not None:
-                alert.notes = notes
-            db.session.commit()
-        return alert
-
-    @staticmethod
-    def delete_alert(alert_id: int) -> bool:
-        """Delete an alert"""
-        alert = db.session.get(Alert, alert_id)
-        if alert:
-            db.session.delete(alert)
-            db.session.commit()
-            return True
-        return False
-
-    @staticmethod
-    def get_active_alerts_for_ticker(ticker_id: int) -> List[Alert]:
-        """Get all active alerts for a specific ticker"""
-        return Alert.query.filter_by(
-            ticker_id=ticker_id,
-            status=AlertStatus.ACTIVE
-        ).all()
+from app.models import Zone, ZoneStatus, User, Ticker
 
 
 class ZoneManager:

@@ -1,0 +1,186 @@
+/* Table filtering styles - Clean inline version */
+.filter-input {
+    padding: 6px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 5px;
+    font-size: 14px;
+    background: white;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    width: 300px;
+    min-width: 250px;
+}
+.filter-input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+.dark .filter-input {
+    background: #374151;
+    border-color: #4B5563;
+    color: white;
+}
+.dark .filter-input:focus {
+    border-color: #1C64F2;
+    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
+}
+
+.filter-checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border: 2px solid #374151;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 13px;
+    font-weight: 500;
+    background: #374151;
+    color: white;
+    white-space: nowrap;
+}
+.filter-checkbox-item:hover {
+    opacity: 0.8;
+}
+
+/* Status Filter Colors - Default gray-700, active with status colors */
+.filter-checkbox-item.status-active.selected {
+    background: #1e3a8a !important;
+    border-color: #1e3a8a !important;
+    color: #93c5fd !important;
+}
+.filter-checkbox-item.status-entry-hit.selected {
+    background: #14532d !important;
+    border-color: #14532d !important;
+    color: #86efac !important;
+}
+.filter-checkbox-item.status-target-hit.selected {
+    background: #581c87 !important;
+    border-color: #581c87 !important;
+    color: #c084fc !important;
+}
+.filter-checkbox-item.status-stoploss-hit.selected {
+    background: #7f1d1d !important;
+    border-color: #7f1d1d !important;
+    color: #fca5a5 !important;
+}
+.filter-checkbox-item.status-failed.selected {
+    background: #111827 !important;
+    border-color: #111827 !important;
+    color: #d1d5db !important;
+}
+
+/* Type Filter Colors - Default gray-700, active with type colors */
+.filter-checkbox-item.type-long.selected {
+    background: #14532d !important;
+    border-color: #14532d !important;
+    color: white !important;
+}
+.filter-checkbox-item.type-short.selected {
+    background: #7f1d1d !important;
+    border-color: #7f1d1d !important;
+    color: white !important;
+}
+
+.dark .filter-checkbox-item {
+    background: #374151;
+    border-color: #374151;
+    color: #d1d5db;
+}
+
+.pill-label {
+    font-weight: 500;
+}
+
+.pill-count {
+    background: rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    padding: 2px 6px;
+    font-size: 11px;
+    font-weight: 600;
+    min-width: 18px;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.filter-separator {
+    width: 1px;
+    height: 24px;
+    background: #d1d5db;
+    margin: 0 4px;
+}
+.dark .filter-separator {
+    background: #6b7280;
+}
+
+.filter-clear {
+    padding: 6px;
+    background: transparent;
+    border: 1px solid #d1d5db;
+    border-radius: 5px;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.filter-clear:hover {
+    background: #f3f4f6;
+    border-color: #9ca3af;
+    color: #374151;
+}
+.dark .filter-clear {
+    border-color: #6b7280;
+    color: #9ca3af;
+}
+.dark .filter-clear:hover {
+    background: #6b7280;
+    border-color: #9ca3af;
+    color: #d1d5db;
+}
+
+/* Filter animation */
+@keyframes filterHighlight {
+    0% { background-color: rgba(59, 130, 246, 0.1); }
+    100% { background-color: transparent; }
+}
+
+.row-filtered-in {
+    animation: filterHighlight 1s ease;
+}
+
+.row-filtered-out {
+    display: none;
+}
+
+/* Search highlight */
+.search-highlight {
+    background: #fef08a;
+    padding: 1px 2px;
+    border-radius: 2px;
+}
+.dark .search-highlight {
+    background: #a16207;
+    color: white;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .filter-input {
+        width: 100%;
+        margin-bottom: 8px;
+    }
+
+    .filter-checkbox-item {
+        font-size: 12px;
+        padding: 5px 10px;
+    }
+
+    .pill-count {
+        font-size: 10px;
+        padding: 1px 5px;
+        min-width: 16px;
+    }
+}

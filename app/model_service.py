@@ -1,6 +1,6 @@
 from typing import Optional, List
 from app import db
-from app.models import Zone, ZoneStatus, User, Ticker
+from app.models import Zone, ZoneStatus, User, Ticker, IST, datetime
 
 
 class ZoneManager:
@@ -31,14 +31,22 @@ class ZoneManager:
         """Update an existing zone"""
         zone = db.session.get(Zone, zone_id)
         if zone:
+            edited_at = datetime.now(IST)
+            edited = False
             if entry is not None:
                 zone.entry = entry
+                edited = True
             if stoploss is not None:
                 zone.stoploss = stoploss
+                edited = True
             if target is not None:
                 zone.target = target
+                edited = True
             if notes is not None:
                 zone.notes = notes
+                edited = True
+            if edited:
+                zone.created_at = edited_at
             db.session.commit()
         return zone
 

@@ -246,6 +246,7 @@ class TickerManager:
                     status_changed = True
 
         if status_changed:
+            zone.updated_at = now
             db.session.commit()
         return status_changed
 

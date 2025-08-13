@@ -136,8 +136,7 @@ class Zone(db.Model):
     # Timestamps
     created_at: so.Mapped[datetime] = so.mapped_column(index=True,
                                                        default=lambda: datetime.now(IST))
-    updated_at: so.Mapped[Optional[datetime]] = so.mapped_column(default=lambda: datetime.now(IST),
-                                                                 onupdate=lambda: datetime.now(IST))
+    updated_at: so.Mapped[Optional[datetime]] = so.mapped_column(default=lambda: datetime.now(IST))
     entry_at: so.Mapped[Optional[datetime]] = so.mapped_column()
     stoploss_at: so.Mapped[Optional[datetime]] = so.mapped_column()
     target_at: so.Mapped[Optional[datetime]] = so.mapped_column()

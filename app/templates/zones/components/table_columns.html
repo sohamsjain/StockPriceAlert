@@ -1,6 +1,7 @@
 <thead class="font-medium text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400 sticky-header">
 <tr>
-    <th scope="col" class="px-4 resizable-th" style="width: 60px;">
+    <!-- Checkbox Column -->
+    <th scope="col" class="px-4 resizable-th" style="width: 60px;" data-column-id="checkbox">
         <div class="flex items-center">
             <input id="checkbox-all" type="checkbox"
                    class="w-6 h-6 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
@@ -8,7 +9,9 @@
         </div>
         <div class="resize-handle"></div>
     </th>
-    <th scope="col" class="pl-10 pr-4 py-3 sortable resizable-th" data-column="symbol"
+
+    <!-- Symbol Column -->
+    <th scope="col" class="pl-10 pr-4 py-3 sortable resizable-th" data-column="symbol" data-column-id="symbol"
         data-type="text" style="width: 180px;">
         <div class="flex items-center justify-start">
             <span>Symbol</span>
@@ -18,7 +21,9 @@
         </div>
         <div class="resize-handle"></div>
     </th>
-    <th scope="col" class="px-4 py-3 text-right sortable resizable-th" data-column="last"
+
+    <!-- Last Price Column -->
+    <th scope="col" class="px-4 py-3 text-right sortable resizable-th" data-column="last" data-column-id="last"
         data-type="number" style="width: 120px;">
         <div class="flex items-center justify-end">
             <span>Last</span>
@@ -28,7 +33,9 @@
         </div>
         <div class="resize-handle"></div>
     </th>
-    <th scope="col" class="px-4 py-3 text-right sortable resizable-th" data-column="entry"
+
+    <!-- Entry Column -->
+    <th scope="col" class="px-4 py-3 text-right sortable resizable-th" data-column="entry" data-column-id="entry"
         data-type="number" style="width: 120px;">
         <div class="flex items-center justify-end">
             <span>Entry</span>
@@ -38,7 +45,9 @@
         </div>
         <div class="resize-handle"></div>
     </th>
-    <th scope="col" class="px-4 py-3 text-right sortable resizable-th" data-column="stoploss"
+
+    <!-- Stoploss Column -->
+    <th scope="col" class="px-4 py-3 text-right sortable resizable-th" data-column="stoploss" data-column-id="stoploss"
         data-type="number" style="width: 120px;">
         <div class="flex items-center justify-end">
             <span>Stoploss</span>
@@ -48,7 +57,9 @@
         </div>
         <div class="resize-handle"></div>
     </th>
-    <th scope="col" class="px-4 py-3 text-right sortable resizable-th" data-column="target"
+
+    <!-- Target Column -->
+    <th scope="col" class="px-4 py-3 text-right sortable resizable-th" data-column="target" data-column-id="target"
         data-type="number" style="width: 120px;">
         <div class="flex items-center justify-end">
             <span>Target</span>
@@ -58,7 +69,9 @@
         </div>
         <div class="resize-handle"></div>
     </th>
-    <th scope="col" class="px-4 py-3 text-right sortable resizable-th" data-column="status"
+
+    <!-- Status Column -->
+    <th scope="col" class="px-4 py-3 text-right sortable resizable-th" data-column="status" data-column-id="status"
         data-type="text" style="width: 140px;">
         <div class="flex items-center justify-end">
             <span>Status</span>
@@ -68,7 +81,9 @@
         </div>
         <div class="resize-handle"></div>
     </th>
-    <th scope="col" class="px-4 py-3 text-right sortable resizable-th" data-column="created"
+
+    <!-- Created Column -->
+    <th scope="col" class="px-4 py-3 text-right sortable resizable-th" data-column="created" data-column-id="created"
         data-type="date" style="width: 180px;">
         <div class="flex items-center justify-end">
             <span>Created</span>
@@ -78,7 +93,9 @@
         </div>
         <div class="resize-handle"></div>
     </th>
-    <th scope="col" class="px-4 py-3 text-right sortable resizable-th" data-column="updated"
+
+    <!-- Updated Column -->
+    <th scope="col" class="px-4 py-3 text-right sortable resizable-th" data-column="updated" data-column-id="updated"
         data-type="date" style="width: 180px;">
         <div class="flex items-center justify-end">
             <span>Updated</span>
@@ -88,7 +105,10 @@
         </div>
         <div class="resize-handle"></div>
     </th>
-    <th scope="col" class="px-4 py-3 text-right resizable-th" style="width: 120px;">View
+
+    <!-- View Column -->
+    <th scope="col" class="px-4 py-3 text-right resizable-th" data-column-id="view" style="width: 120px;">
+        View
         <div class="resize-handle"></div>
     </th>
 </tr>

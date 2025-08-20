@@ -2,6 +2,7 @@ from kiteconnect import KiteTicker
 from datetime import datetime, timezone, timedelta
 import logging
 import time
+import sys
 from collections import defaultdict, deque
 from sqlalchemy import select
 from app import db, create_app
@@ -11,7 +12,6 @@ from app.model_service import ZoneManager
 from notification_service import NotificationManager
 import threading
 import pytz
-import signal
 
 # Configure logging
 logging.basicConfig(
@@ -62,13 +62,34 @@ class TickerManager:
         self.candle_history = defaultdict(lambda: deque(maxlen=20))
         self.data_lock = threading.Lock()
         self.candle_timer = None
-        self.last_connect_time = None
-        self.connected = False  # Tracks if on_connect fired
+        self.connected = False
+        self.should_exit = False
+
+    def is_market_open(self):
+        """Check if market is currently open"""
+        now = datetime.now(IST)
+
+        # Skip weekends
+        if now.weekday() >= 5:
+            logger.info("Market closed: Weekend")
+            return False
+
+        # Check if within trading hours (9:10 AM to 3:30 PM IST)
+        market_start = now.replace(hour=9, minute=10, second=0, microsecond=0)
+        market_end = now.replace(hour=15, minute=30, second=0, microsecond=0)
+
+        if now < market_start:
+            logger.info(f"Market not yet open. Opens at {market_start}")
+            return False
+        elif now > market_end:
+            logger.info(f"Market closed for the day. Closed at {market_end}")
+            return False
+
+        return True
 
     def initialize_connection(self):
         """Initialize KiteTicker connection with auto-login"""
         try:
-            # Clean old Kite instance
             self.k = Kite()
 
             if not self.k.ensure_login():
@@ -81,11 +102,8 @@ class TickerManager:
 
             logger.info("Successfully logged in to Kite")
 
-            # Always create fresh KiteTicker instance
             self.kws = KiteTicker(self.k.api_key, self.k.access_token)
-            self.connected = False  # Reset connect flag
-            self.last_connect_time = None
-
+            self.connected = False
             self.setup_handlers()
             self.start_candle_processor()
             return True
@@ -99,13 +117,19 @@ class TickerManager:
         self.kws.on_connect = self.on_connect
         self.kws.on_close = self.on_close
         self.kws.on_error = self.on_error
-        self.kws.on_reconnect = self.on_reconnect
-        self.kws.on_noreconnect = self.on_noreconnect
 
     def start_candle_processor(self):
-        self.process_completed_candles()
-        self.candle_timer = threading.Timer(1.0, self.start_candle_processor)
-        self.candle_timer.start()
+        """Process completed candles every second"""
+        if not self.should_exit:
+            self.process_completed_candles()
+            # Check if market is still open
+            if not self.is_market_open():
+                logger.info("Market closed during processing. Initiating shutdown...")
+                self.should_exit = True
+                return
+
+            self.candle_timer = threading.Timer(1.0, self.start_candle_processor)
+            self.candle_timer.start()
 
     def stop_candle_processor(self):
         if self.candle_timer:
@@ -257,14 +281,14 @@ class TickerManager:
                     last_trade_time = tick['last_trade_time']
                     if not self.is_trading_hours(last_trade_time):
                         continue
-                    self.process_tick(tick['instrument_token'], tick['last_price'], tick.get('volume', 0), last_trade_time)
+                    self.process_tick(tick['instrument_token'], tick['last_price'], tick.get('volume', 0),
+                                      last_trade_time)
             except Exception as e:
                 logger.error(f"Error processing tick: {e}")
 
     def on_connect(self, ws, response):
         logger.info("Successfully connected to WebSocket")
         self.connected = True
-        self.last_connect_time = datetime.now()
         instrument_tokens = self.load_tickers()
         if instrument_tokens:
             ws.subscribe(instrument_tokens)
@@ -275,142 +299,98 @@ class TickerManager:
 
     def on_close(self, ws, code, reason):
         logger.warning(f"Connection closed: {code} - {reason}")
-        self.is_running = False
-        self.stop_candle_processor()
+        self.should_exit = True
 
     def on_error(self, ws, code, reason):
         logger.error(f"Error in WebSocket: {code} - {reason}")
-        self.is_running = False
-        self.stop_candle_processor()
-
-    def on_reconnect(self, ws, attempts_count):
-        logger.info(f"Reconnecting... {attempts_count} attempt(s)")
-
-    def on_noreconnect(self, ws):
-        logger.error("Maximum reconnection attempts reached")
-        self.is_running = False
-        self.stop_candle_processor()
+        self.should_exit = True
 
     def start(self):
         try:
             self.is_running = True
             self.kws.connect(threaded=True)
             logger.info("WebSocket connection started")
+            return True
         except Exception as e:
             logger.error(f"Failed to start WebSocket: {e}")
             self.is_running = False
+            return False
 
     def stop(self):
         try:
             self.is_running = False
+            self.should_exit = True
             self.stop_candle_processor()
             if self.kws:
                 self.kws.close()
-                self.kws = None  # Force fresh connection next time
             logger.info("WebSocket connection stopped")
         except Exception as e:
             logger.error(f"Error stopping WebSocket: {e}")
 
-    def check_market_hours(self):
-        now = datetime.now(IST)
-        if now.weekday() >= 5:
+    def run_during_market_hours(self):
+        """Run the ticker manager during market hours and exit when market closes"""
+
+        # Check if market is open before starting
+        if not self.is_market_open():
+            logger.info("Market is not open. Exiting...")
             return False
-        market_start = now.replace(hour=8, minute=15, second=0, microsecond=0)
-        market_end = now.replace(hour=15, minute=30, second=0, microsecond=0)
-        return market_start <= now <= market_end
 
-    def run_forever(self):
-        retry_count = 0
-        max_retries = 3
+        logger.info("Market is open. Starting ticker manager...")
 
-        while True:
-            try:
-                if self.check_market_hours():
-                    if not self.is_running:
-                        logger.info("Market hours started. Initializing connection...")
-                        if self.initialize_connection():
-                            self.start()
-                            retry_count = 0
-                            # Wait max 5s for on_connect, else restart
-                            time.sleep(5)
-                            if not self.connected:
-                                logger.error("WebSocket did not connect in time. Retrying...")
-                                self.stop()
-                                continue
-                        else:
-                            retry_count += 1
-                            if retry_count >= max_retries:
-                                logger.error(f"Failed to initialize connection after {max_retries} attempts. Waiting 30 minutes...")
-                                time.sleep(1800)
-                                retry_count = 0
-                            else:
-                                logger.error(f"Failed to initialize connection (attempt {retry_count}/{max_retries}). Retrying in 60 seconds...")
-                                time.sleep(60)
-                            continue
-                else:
-                    if self.is_running:
-                        logger.info("Market hours over. Stopping connection...")
-                        self.stop()
-                        retry_count = 0
-                    else:
-                        next_market_time = self.get_next_market_time()
-                        sleep_seconds = (next_market_time - datetime.now(IST)).total_seconds()
-                        logger.info(f"Markets closed. Sleeping until {next_market_time}")
-                        time.sleep(min(sleep_seconds, 3600))
-                        continue
+        # Initialize connection
+        if not self.initialize_connection():
+            logger.error("Failed to initialize connection. Exiting...")
+            return False
 
-                time.sleep(5)
+        # Start WebSocket connection
+        if not self.start():
+            logger.error("Failed to start WebSocket. Exiting...")
+            return False
 
-            except Exception as e:
-                logger.error(f"Unexpected error in main loop: {e}")
-                if self.is_running:
-                    self.stop()
-                retry_count += 1
-                if retry_count >= max_retries:
-                    logger.error(f"Too many errors in main loop. Waiting 10 minutes...")
-                    time.sleep(600)
-                    retry_count = 0
-                else:
-                    time.sleep(60)
+        # Wait for connection
+        connection_timeout = 10  # seconds
+        start_time = time.time()
+        while not self.connected and (time.time() - start_time) < connection_timeout:
+            time.sleep(0.5)
 
-    @staticmethod
-    def get_next_market_time():
-        now = datetime.now(IST)
-        market_start = now.replace(hour=8, minute=15, second=0, microsecond=0)
-        next_day = now + timedelta(days=1) if now > market_start else now
-        while True:
-            if next_day.weekday() < 5:
-                return next_day.replace(hour=8, minute=15, second=0, microsecond=0)
-            next_day += timedelta(days=1)
+        if not self.connected:
+            logger.error("Failed to connect within timeout. Exiting...")
+            self.stop()
+            return False
 
-    def get_candle_stats(self):
-        with self.data_lock:
-            stats = {}
-            current_time = datetime.now(IST)
-            for instrument_token, candle in self.current_candles.items():
-                ticker = self.tickers[instrument_token]
-                stats[ticker.symbol] = {
-                    'ticks': candle.tick_count,
-                    'candle': str(candle),
-                    'age_seconds': (current_time - candle.timestamp).total_seconds()
-                }
-            return stats
+        logger.info("Successfully connected. Running during market hours...")
+
+        # Monitor market hours and connection status
+        try:
+            while self.is_running and not self.should_exit:
+                # Check market status every 30 seconds
+                if not self.is_market_open():
+                    logger.info("Market has closed. Stopping...")
+                    break
+
+                time.sleep(30)
+
+        except KeyboardInterrupt:
+            logger.info("Received interrupt signal. Stopping...")
+        except Exception as e:
+            logger.error(f"Unexpected error during runtime: {e}")
+        finally:
+            self.stop()
+            logger.info("Ticker manager stopped. Exiting...")
+
+        return True
 
 
 def main():
-    logger.info("Starting Raven WebSocket Manager with 5-second candle resampling")
+    logger.info("Starting Raven WebSocket Manager (Cron Version)")
+
     manager = TickerManager()
+    success = manager.run_during_market_hours()
 
-    def print_stats():
-        if manager.is_running:
-            stats = manager.get_candle_stats()
-            if stats:
-                logger.info(f"Current candle stats: {len(stats)} active candles")
-        if manager.is_running:
-            threading.Timer(30.0, print_stats).start()
-
-    threading.Timer(30.0, print_stats).start()
-    manager.run_forever()
+    # Exit with appropriate code
+    exit_code = 0 if success else 1
+    logger.info(f"Script completed with exit code: {exit_code}")
+    sys.exit(exit_code)
 
 
 if __name__ == "__main__":
